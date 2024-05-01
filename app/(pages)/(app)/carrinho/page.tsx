@@ -27,22 +27,22 @@ export default function Carrinho() {
       >
         <ListCart />
 
-        <Box
-          display="flex"
-          flex={1}
-          flexDirection="column"
-          sx={{
-            border: 'solid 1px',
-            borderColor: '#565656',
-            p: 5,
-            borderRadius: 4,
-            '@media (max-width: 600px)': {
-              p: 2,
-            },
-          }}
-          height="fit-content"
-        >
-          {cartLength > 0 && (
+        {cartLength > 0 && (
+          <Box
+            display="flex"
+            flex={1}
+            flexDirection="column"
+            sx={{
+              border: 'solid 1px',
+              borderColor: '#565656',
+              p: 5,
+              borderRadius: 4,
+              '@media (max-width: 600px)': {
+                p: 2,
+              },
+            }}
+            height="fit-content"
+          >
             <Box
               display="flex"
               flexDirection="row"
@@ -66,8 +66,8 @@ export default function Carrinho() {
                 {formatCurrency(cart?.sub_total || 0)}
               </Typography>
             </Box>
-          )}
-        </Box>
+          </Box>
+        )}
       </Box>
     </Container>
   );
