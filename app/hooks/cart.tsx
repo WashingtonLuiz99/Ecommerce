@@ -13,14 +13,16 @@ import type ICartItem from '@/app/interfaces/IProductCart';
 
 interface CartContextData {
   cart?: ICart;
+  cartLength: number;
   checkIfEmptyCart: (tempCart?: ICart | undefined) => boolean;
   updateCart: (currentCart: ICart) => void;
   deleteCartItem: (cart_id: number) => { success: boolean; error?: string };
   updateCartItemAmount: (
-    cart_id: number,
+    itemId: number,
     amount: number,
   ) => { success: boolean; error?: string };
   addCartItem: (item: ICartItem) => { success: boolean; error?: string };
+  getProductCart: (id: number) => ICartItem | undefined;
 }
 
 const CartContext = createContext<CartContextData>({} as CartContextData);
@@ -78,8 +80,7 @@ export const CartProvider: React.FC<ICartProvider> = ({ children }) => {
       if (!cart)
         return {
           success: false,
-          error:
-            'Houve um problema ao processar seu carrinho. Tente novamente mais tarde.',
+          error: 'There was a problem processing your cart. Try again later.',
         };
 
       const checkExistItem = cart?.cart_items.find(x => x.id === cart_id);
@@ -87,8 +88,7 @@ export const CartProvider: React.FC<ICartProvider> = ({ children }) => {
       if (checkExistItem)
         return {
           success: false,
-          error:
-            'Não foi possível encontrar o item no carrinho, tente novamente mais tarde.',
+          error: 'Unable to find item in cart, please try again later.',
         };
 
       const newCart = recalculateCart({
@@ -104,7 +104,7 @@ export const CartProvider: React.FC<ICartProvider> = ({ children }) => {
   );
 
   const updateCartItemAmount = useCallback(
-    (cart_id: number, amount: number) => {
+    (itemId: number, amount: number) => {
       if (!cart)
         return {
           success: false,
@@ -112,7 +112,7 @@ export const CartProvider: React.FC<ICartProvider> = ({ children }) => {
             'Houve um problema ao processar seu carrinho. Tente novamente mais tarde.',
         };
 
-      const checkExistItem = cart?.cart_items.find(x => x.stock.id === cart_id);
+      const checkExistItem = cart?.cart_items.find(x => x.stock.id === itemId);
 
       if (!checkExistItem)
         return {
@@ -124,7 +124,7 @@ export const CartProvider: React.FC<ICartProvider> = ({ children }) => {
       const newCart = recalculateCart({
         ...cart,
         cart_items: cart?.cart_items.map(item => {
-          if (item.stock.id !== cart_id) return item;
+          if (item.stock.id !== itemId) return item;
 
           return {
             ...item,
@@ -173,6 +173,15 @@ export const CartProvider: React.FC<ICartProvider> = ({ children }) => {
     [cart, recalculateCart, updateCart],
   );
 
+  const getProductCart = useCallback(
+    (id: number) => {
+      const findProduct = cart?.cart_items.find(item => item.stock.id === id);
+
+      return findProduct;
+    },
+    [cart?.cart_items],
+  );
+
   useEffect(() => {
     const localStorageCart = localStorage.getItem(`${storeName}.cart`);
 
@@ -189,11 +198,13 @@ export const CartProvider: React.FC<ICartProvider> = ({ children }) => {
     <CartContext.Provider
       value={{
         cart,
+        cartLength: cart?.cart_items.length ?? 0,
         deleteCartItem,
         updateCart,
         updateCartItemAmount,
         addCartItem,
         checkIfEmptyCart,
+        getProductCart,
       }}
     >
       {children}

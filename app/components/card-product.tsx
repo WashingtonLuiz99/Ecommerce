@@ -40,16 +40,15 @@ export default function CardProduct({ id, title, image, price }: IProduct) {
       const result = addCartItem(response);
 
       if (!result.success) {
-        console.log(result);
         throw new Error(result?.error);
       } else {
-        enqueueSnackbar('Item adicionado no carrinho.', {
+        enqueueSnackbar('Item added to cart.', {
           variant: 'success',
         });
       }
     } catch (err: any) {
       enqueueSnackbar(
-        `${err.message}` ?? 'Ocorreu um erro ao atualizar o carrinho',
+        `${err.message}` ?? 'An error occurred while updating the cart',
         {
           variant: 'error',
         },
@@ -69,7 +68,16 @@ export default function CardProduct({ id, title, image, price }: IProduct) {
         flexDirection: 'column',
       }}
     >
-      <CardActionArea LinkComponent={Link} href={`/produto/${id}`}>
+      <CardActionArea
+        LinkComponent={Link}
+        href={`/produto/${id}`}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+          width: '100%',
+        }}
+      >
         <Image
           src={image}
           placeholder="blur"
@@ -94,6 +102,7 @@ export default function CardProduct({ id, title, image, price }: IProduct) {
           display="flex"
           justifyContent="space-between"
           flex={1}
+          width="100%"
         >
           <Typography
             variant="h6"
@@ -103,19 +112,23 @@ export default function CardProduct({ id, title, image, price }: IProduct) {
               display: '-webkit-box',
               WebkitLineClamp: '2',
               WebkitBoxOrient: 'vertical',
+              flex: 1,
             }}
           >
             {title}
           </Typography>
 
-          <Typography variant="body1" fontSize={20}>
+          <Typography variant="body1" fontWeight="bold" fontSize={20}>
             {formatCurrency(price)}
           </Typography>
 
           <Button
             variant="contained"
             sx={{ width: '100%' }}
-            onClick={handleAddCart}
+            onClick={e => {
+              e.preventDefault(); // Evitar que o link seja acionado
+              handleAddCart();
+            }}
           >
             {!loading ? 'Adicionar' : <CircularProgress />}
           </Button>
