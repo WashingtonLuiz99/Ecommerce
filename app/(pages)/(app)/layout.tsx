@@ -1,3 +1,4 @@
+import Copyright from '@/app/components/copyright';
 import Header from '@/app/components/header';
 
 export default function RootLayout({
@@ -9,6 +10,7 @@ export default function RootLayout({
     <>
       <Header />
       {children}
+      <Copyright />
     </>
   );
 }
