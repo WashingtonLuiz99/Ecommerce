@@ -47,7 +47,7 @@ export default function CardProduct({ id, title, image, price }: IProduct) {
           variant: 'success',
         });
       }
-    } catch (err) {
+    } catch (err: any) {
       enqueueSnackbar(
         `${err.message}` ?? 'Ocorreu um erro ao atualizar o carrinho',
         {

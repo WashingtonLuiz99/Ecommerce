@@ -15,9 +15,9 @@ interface CartContextData {
   cart?: ICart;
   checkIfEmptyCart: (tempCart?: ICart | undefined) => boolean;
   updateCart: (currentCart: ICart) => void;
-  deleteCartItem: (cart_id: string) => { success: boolean; error?: string };
+  deleteCartItem: (cart_id: number) => { success: boolean; error?: string };
   updateCartItemAmount: (
-    cart_id: string,
+    cart_id: number,
     amount: number,
   ) => { success: boolean; error?: string };
   addCartItem: (item: ICartItem) => { success: boolean; error?: string };
